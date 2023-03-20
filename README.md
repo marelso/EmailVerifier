@@ -31,4 +31,4 @@ go run main.go example.com example.net example.org
 ~~~
 
 # License
-This project is licensed under the MIT[link](https://opensource.org/license/mit/) License.
+This project is licensed under the [MIT](https://opensource.org/license/mit/) License.
