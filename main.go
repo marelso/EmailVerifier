@@ -11,7 +11,7 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Printf("domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarc \n")
+	fmt.Printf("domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarcRecord \n")
 
 	for scanner.Scan() {
 		check(scanner.Text())
@@ -23,17 +23,17 @@ func main() {
 }
 
 func check(domain string) {
-	var hasMX, hasMX, hasDMARC bool
+	var hasMX, hasSPF, hasDMARC bool
 	var sprRecord, dmarcRecord string
 
 	hasMX = validateMX(domain)
 	hasSPF, sprRecord = validateTXT(domain, false)
 	hasDMARC, dmarcRecord = validateTXT(domain, true)
 
-	fmt.Printf("%v, %v, %v, %v, %v, %v \n", domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarc)
+	fmt.Printf("%v, %v, %v, %v, %v, %v \n", domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarcRecord)
 }
 
-func validateMX(domain string) (bool) {
+func validateMX(domain string) bool {
 	mxRecords, err := net.LookupMX(domain)
 
 	if err != nil {
@@ -48,23 +48,20 @@ func validateMX(domain string) (bool) {
 }
 
 func validateTXT(domain string, isDmarc bool) (bool, string) {
-	txtRecords, err := net.LookupTXT(domain)
-
 	var theRecord string
 	var prefix string
 	var has bool
 
 	switch isDmarc {
 		case true:
-			prefix = "v=spf1":
-			break
-
+			prefix = "v=DMARC1"
 		case false:
-			prefix = "v=DMARC1":
-			break
+			prefix = "v=spf1"
 	}
 
-	if err != nil { 
+	txtRecords, err := net.LookupTXT(domain)
+
+	if err != nil {
 		log.Printf("Error: %v", err)
 	}
 
