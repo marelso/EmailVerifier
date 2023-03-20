@@ -10,8 +10,16 @@ import (
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
+
 	fmt.Printf("domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarcRecord \n")
+
+	if len(os.Args) >= 2 {
+		for _, arg := range os.Args[1:] {
+			check(arg)
+		}
+	}
+
+	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
 		check(scanner.Text())
