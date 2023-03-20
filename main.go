@@ -27,10 +27,10 @@ func check(domain string) {
 	var sprRecord, dmarcRecord string
 
 	hasMX = validateMX(domain)
+	hasSPF, sprRecord = validateTXT(domain, false)
+	hasDMARC, dmarcRecord = validateTXT(domain, true)
 
-	txtRecords, err := net.LookupTXT(domain)
-
-
+	fmt.Printf("%v, %v, %v, %v, %v, %v \n", domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarc)
 }
 
 func validateMX(domain string) (bool) {
@@ -45,4 +45,35 @@ func validateMX(domain string) (bool) {
 	}
 
 	return false
+}
+
+func validateTXT(domain string, isDmarc bool) (bool, string) {
+	txtRecords, err := net.LookupTXT(domain)
+
+	var theRecord string
+	var prefix string
+	var has bool
+
+	switch isDmarc {
+		case true:
+			prefix = "v=spf1":
+			break
+
+		case false:
+			prefix = "v=DMARC1":
+			break
+	}
+
+	if err != nil { 
+		log.Printf("Error: %v", err)
+	}
+
+	for _, record := range txtRecords {
+		if strings.HasPrefix(record, prefix) {
+			has = true
+			theRecord = record
+		}
+	}
+
+	return has, theRecord
 }
