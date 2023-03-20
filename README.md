@@ -23,3 +23,12 @@ To verify a single domain:
 ~~~javascript
 go run main.go example.com
 ~~~
+
+To verify multiple domains, provide them as separate arguments:
+
+~~~javascript
+go run main.go example.com example.net example.org
+~~~
+
+# License
+This project is licensed under the MIT[link](https://opensource.org/license/mit/) License.
