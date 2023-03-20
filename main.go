@@ -10,6 +10,12 @@ import (
 )
 
 func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Printf("domain, hasMX, hasSPF, sprRecord, hasDMARC, dmarc")
+
+	for scanner.Scan() {
+		check(scanner.Text())
+	}
 }
 
 func check(domain string) {
